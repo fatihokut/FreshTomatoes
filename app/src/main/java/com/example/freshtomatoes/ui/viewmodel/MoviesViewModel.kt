@@ -18,9 +18,9 @@ class MoviesViewModel @Inject internal constructor(
     private val _movies: MutableLiveData<ArrayList<Movie>> = repository.movies
     var movies: LiveData<ArrayList<Movie>> = _movies
 
-    fun getMovies() {
+    fun getMovies(page: Int) {
         viewModelScope.launch {
-            repository.getUpcomingMovies()
+            repository.getUpcomingMovies(page)
         }
     }
 

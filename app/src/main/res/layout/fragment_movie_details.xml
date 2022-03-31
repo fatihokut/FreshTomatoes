@@ -23,8 +23,8 @@
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/sonic"
-            app:moviePoster="@{posterUrl}"/>
+            app:moviePoster="@{posterUrl}"
+            app:srcCompat="@drawable/sonic" />
 
         <TextView
             android:id="@+id/title"

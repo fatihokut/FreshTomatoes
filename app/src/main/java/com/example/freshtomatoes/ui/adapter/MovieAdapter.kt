@@ -30,5 +30,7 @@ object DiffCallback : DiffUtil.ItemCallback<Movie>() {
         oldItem == newItem
 
     override fun areContentsTheSame(oldItem: Movie, newItem: Movie) =
-        oldItem.title == newItem.title
+        (oldItem.title == newItem.title) &&
+                (oldItem.releaseDate == newItem.releaseDate) &&
+                (oldItem.overview == newItem.overview)
 }

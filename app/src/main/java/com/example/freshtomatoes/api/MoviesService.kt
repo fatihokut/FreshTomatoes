@@ -6,12 +6,13 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 
 interface MoviesService {
 
     @GET("movie/upcoming?api_key=${BuildConfig.API_KEY}")
-    fun getUpcomingMovies(): Call<ResponseWrapper>
+    fun getUpcomingMovies(@Query("page") pageNumber: Int): Call<ResponseWrapper>
 
     companion object {
         private val retrofit by lazy {

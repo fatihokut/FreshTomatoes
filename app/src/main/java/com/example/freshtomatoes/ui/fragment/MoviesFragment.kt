@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.navOptions
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.freshtomatoes.R
 import com.example.freshtomatoes.databinding.FragmentMoviesBinding
 import com.example.freshtomatoes.ui.adapter.CardAdapter
 import com.example.freshtomatoes.ui.adapter.MovieClickListener
 import com.example.freshtomatoes.ui.model.Movie
+import com.example.freshtomatoes.ui.util.addOnScrolledToEnd
 import com.example.freshtomatoes.ui.viewmodel.MoviesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,6 +25,7 @@ class MoviesFragment : Fragment(), MovieClickListener {
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
     private val model: MoviesViewModel by lazy { ViewModelProvider(this)[MoviesViewModel::class.java] }
+    private var pageNumber = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,12 +37,18 @@ class MoviesFragment : Fragment(), MovieClickListener {
         val recyclerView = binding.recyclerView
 
         val movieAdapter = CardAdapter(this)
+
         recyclerView.apply {
             layoutManager = GridLayoutManager(requireContext(), 3)
+            setHasFixedSize(true)
             adapter = movieAdapter
+            addOnScrolledToEnd {
+                pageNumber++
+                model.getMovies(pageNumber)
+            }
         }
 
-        model.getMovies()
+        model.getMovies(pageNumber)
         model.movies.observe(viewLifecycleOwner) {
             movieAdapter.submitList(it)
         }
@@ -50,16 +56,12 @@ class MoviesFragment : Fragment(), MovieClickListener {
         return view
     }
 
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
     override fun onClick(movie: Movie) {
-        // Todo: Animation
-//        val options = navOptions {
-//            anim {
-//                enter = R.anim.
-//                exit = R.anim.slide_out_left
-//                popEnter = R.anim.slide_in_left
-//                popExit = R.anim.slide_out_right
-//            }
-//        }
         val action = MoviesFragmentDirections.moviesToDetails(movie)
         Navigation.findNavController(binding.root).navigate(action)
     }

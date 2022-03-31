@@ -18,9 +18,10 @@ class MoviesRepository @Inject constructor() {
     }
 
     val movies = MutableLiveData<ArrayList<Movie>>()
+    val batch = ArrayList<Movie>()
 
-    fun getUpcomingMovies() {
-        instance.getUpcomingMovies().enqueue(object :
+    fun getUpcomingMovies(page: Int) {
+        instance.getUpcomingMovies(page).enqueue(object :
             Callback<ResponseWrapper> {
             override fun onFailure(call: Call<ResponseWrapper>, t: Throwable) {
                 Log.d(TAG, "Unsuccessful request: " + t.message)
@@ -31,9 +32,9 @@ class MoviesRepository @Inject constructor() {
                 response: Response<ResponseWrapper>
             ) {
                 if (response.isSuccessful && response.body() != null) {
-                    Log.d(TAG, "Success: " + response.raw().request().url().toString())
                     response.body()?.let { it ->
-                        movies.postValue(buildResults(it))
+                        batch.addAll(buildResults(it))
+                        movies.postValue(batch)
                     }
                 } else {
                     onFailure(
@@ -47,7 +48,6 @@ class MoviesRepository @Inject constructor() {
     }
 
     private fun buildResults(wrapper: ResponseWrapper): ArrayList<Movie> {
-//        Log.d(TAG, "Build results = " + wrapper.results)
         wrapper.let { response ->
             val resultsList = ArrayList<Movie>()
             response.results?.forEach {
