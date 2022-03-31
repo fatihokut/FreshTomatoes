@@ -53,7 +53,10 @@ class MoviesRepository @Inject constructor() {
             response.results?.forEach {
                 resultsList.add(
                     Movie(
-                        it.title
+                        it.title,
+                        it.poster_path,
+                        it.release_date,
+                        it.overview
                     )
                 )
             }
